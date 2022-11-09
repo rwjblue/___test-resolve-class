@@ -19,6 +19,16 @@ module('Integration | Helper | resolve', function (hooks) {
     assert.dom(this.element).hasText('Hello!');
   });
 
+  test('it renders components with resolved templates (e.g. non-colocated) using {{let}}', async function (assert) {
+    class Foo extends Component {}
+    this.owner.register('component:foo', Foo);
+    this.owner.register('template:components/foo', hbs`Hello!`);
+
+    await render(hbs`{{#let (resolve type="component" name="foo") as |Comp|}}<Comp />{{/let}}`);
+
+    assert.dom(this.element).hasText('Hello!');
+  });
+
   test('it invokes helpers', async function (assert) {
     this.owner.register('helper:foo', helper(() => {
       return false;
